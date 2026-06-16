@@ -1,0 +1,6 @@
+*.db
+*.sqlite3
+smoke.db
+tunetribe.db
+CodeMaster
+CodeMaster.exe

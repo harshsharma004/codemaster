@@ -1,0 +1,145 @@
+services:
+  mysql:
+    image: mysql:8.4@sha256:be18eb9dc45eea9b86cb74f8c68ab92ce8569ecc37ea4e6fade02e37036c5ff4
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --skip-name-resolve
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-CodeMaster}
+      MYSQL_USER: ${MYSQL_USER:-CodeMaster}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?set MYSQL_PASSWORD in your environment or .env file}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?set MYSQL_ROOT_PASSWORD in your environment or .env file}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u$$MYSQL_USER -p$$MYSQL_PASSWORD --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+    networks:
+      - app
+
+  backend:
+    profiles:
+      - app
+    build:
+      context: ./backend
+    environment:
+      CodeMaster_ENVIRONMENT: production
+      CodeMaster_SECRET_KEY: ${CodeMaster_SECRET_KEY:?set CodeMaster_SECRET_KEY in your environment or .env file}
+      CodeMaster_DATABASE_URL: mysql://${MYSQL_USER:-CodeMaster}:${MYSQL_PASSWORD:?set MYSQL_PASSWORD in your environment or .env file}@mysql:3306/${MYSQL_DATABASE:-CodeMaster}?charset=utf8mb4&parseTime=true
+      CodeMaster_DATABASE_AUTO_MIGRATE: "false"
+      CodeMaster_CORS_ORIGINS: ${CodeMaster_CORS_ORIGINS:?set CodeMaster_CORS_ORIGINS in your environment or .env file}
+      CodeMaster_ALLOWED_HOSTS: ${CodeMaster_ALLOWED_HOSTS:?set CodeMaster_ALLOWED_HOSTS in your environment or .env file}
+      CodeMaster_SEED_DEMO_DATA: ${CodeMaster_SEED_DEMO_DATA:-false}
+      CodeMaster_AUTH_RATE_LIMIT_MAX_ATTEMPTS: ${CodeMaster_AUTH_RATE_LIMIT_MAX_ATTEMPTS:-5}
+      CodeMaster_AUTH_RATE_LIMIT_WINDOW_SECONDS: ${CodeMaster_AUTH_RATE_LIMIT_WINDOW_SECONDS:-300}
+      CodeMaster_ENABLE_ADMIN: ${CodeMaster_ENABLE_ADMIN:-false}
+      CodeMaster_ADMIN_EMAILS: ${CodeMaster_ADMIN_EMAILS:-}
+      CodeMaster_ADMIN_RATE_LIMIT_MAX_ATTEMPTS: ${CodeMaster_ADMIN_RATE_LIMIT_MAX_ATTEMPTS:-5}
+      CodeMaster_ADMIN_RATE_LIMIT_WINDOW_SECONDS: ${CodeMaster_ADMIN_RATE_LIMIT_WINDOW_SECONDS:-300}
+      CodeMaster_FRIEND_LOOKUP_RATE_LIMIT_MAX_ATTEMPTS: ${CodeMaster_FRIEND_LOOKUP_RATE_LIMIT_MAX_ATTEMPTS:-20}
+      CodeMaster_FRIEND_LOOKUP_RATE_LIMIT_WINDOW_SECONDS: ${CodeMaster_FRIEND_LOOKUP_RATE_LIMIT_WINDOW_SECONDS:-60}
+      CodeMaster_ENABLE_DOCS: ${CodeMaster_ENABLE_DOCS:-false}
+      CodeMaster_SESSION_COOKIE_NAME: ${CodeMaster_SESSION_COOKIE_NAME:-CodeMaster-admin-session}
+    expose:
+      - "8000"
+    ports:
+      - "8000:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      backend-migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--quiet",
+          "--tries=1",
+          "--spider",
+          "http://127.0.0.1:8000/api/health",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    restart: unless-stopped
+    networks:
+      - app
+      - public
+
+  backend-migrate:
+    profiles:
+      - app
+    build:
+      context: ./backend
+    command: ["/app/CodeMaster", "migrate", "up"]
+    environment:
+      CodeMaster_ENVIRONMENT: production
+      CodeMaster_SECRET_KEY: ${CodeMaster_SECRET_KEY:?set CodeMaster_SECRET_KEY in your environment or .env file}
+      CodeMaster_DATABASE_URL: mysql://${MYSQL_USER:-CodeMaster}:${MYSQL_PASSWORD:?set MYSQL_PASSWORD in your environment or .env file}@mysql:3306/${MYSQL_DATABASE:-CodeMaster}?charset=utf8mb4&parseTime=true
+      CodeMaster_DATABASE_AUTO_MIGRATE: "false"
+      CodeMaster_DATABASE_SSL_CA_PATH: ${CodeMaster_DATABASE_SSL_CA_PATH:-}
+      CodeMaster_DATABASE_SSL_VERIFY_CERT: ${CodeMaster_DATABASE_SSL_VERIFY_CERT:-false}
+      CodeMaster_DATABASE_SSL_VERIFY_IDENTITY: ${CodeMaster_DATABASE_SSL_VERIFY_IDENTITY:-false}
+      CodeMaster_SEED_DEMO_DATA: ${CodeMaster_SEED_DEMO_DATA:-false}
+      CodeMaster_ENABLE_DOCS: ${CodeMaster_ENABLE_DOCS:-false}
+      CodeMaster_CORS_ORIGINS: ${CodeMaster_CORS_ORIGINS:-http://localhost}
+      CodeMaster_ALLOWED_HOSTS: ${CodeMaster_ALLOWED_HOSTS:-localhost}
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: "no"
+    networks:
+      - app
+
+  caddy:
+    image: caddy:2.10.2-alpine@sha256:4c6e91c6ed0e2fa03efd5b44747b625fec79bc9cd06ac5235a779726618e530d
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      CodeMaster_PUBLIC_HOSTNAME: ${CodeMaster_PUBLIC_HOSTNAME:?set CodeMaster_PUBLIC_HOSTNAME in your environment or .env file}
+      CodeMaster_ACME_EMAIL: ${CodeMaster_ACME_EMAIL:?set CodeMaster_ACME_EMAIL in your environment or .env file}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    restart: unless-stopped
+    networks:
+      - public
+      - app
+
+  frontend:
+    profiles:
+      - frontend
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-/api}
+    ports:
+      - "8080:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - app
+
+volumes:
+  mysql_data:
+  caddy_data:
+  caddy_config:
+
+networks:
+  app:
+    internal: true
+  public:

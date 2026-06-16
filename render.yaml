@@ -1,0 +1,36 @@
+services:
+  - type: web
+    name: CodeMaster-api
+    runtime: docker
+    plan: free
+    region: virginia
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /api/health
+    envVars:
+      - key: CodeMaster_ENVIRONMENT
+        value: production
+      - key: CodeMaster_SECRET_KEY
+        generateValue: true
+      - key: CodeMaster_DATABASE_URL
+        sync: false
+      - key: CodeMaster_DATABASE_SSL_CA_PATH
+        value: /etc/ssl/certs/ca-certificates.crt
+      - key: CodeMaster_DATABASE_SSL_VERIFY_CERT
+        value: "true"
+      - key: CodeMaster_DATABASE_SSL_VERIFY_IDENTITY
+        value: "true"
+      - key: CodeMaster_CORS_ORIGINS
+        value: https://trie-quest.vercel.app
+      - key: CodeMaster_ALLOWED_HOSTS
+        value: CodeMaster-api.onrender.com,127.0.0.1,localhost
+      - key: CodeMaster_DATABASE_AUTO_MIGRATE
+        value: "false"
+      - key: CodeMaster_SEED_DEMO_DATA
+        value: "false"
+      - key: CodeMaster_ENABLE_ADMIN
+        value: "false"
+      - key: CodeMaster_ENABLE_DOCS
+        value: "false"
+      - key: CodeMaster_DATABASE_POOL_RECYCLE_SECONDS
+        value: "300"
