@@ -175,16 +175,7 @@ export default function LandingPage() {
         <TickMark className="absolute top-[18%] left-[32%] opacity-30 hidden md:block" />
         <TickMark className="absolute top-[24%] right-[30%] opacity-25 hidden md:block" />
 
-        {/* Eyebrow badge */}
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="flex items-center gap-2 px-4 py-1.5 rounded-full mb-7 text-[12px] font-bold"
-          style={{ background: "white", border: "1.5px solid #e5e7eb", color: "#555" }}
-        >
-          <span>⚡</span> Your Competitive Programming Arena
-        </motion.div>
+
 
         {/* Headline */}
         <motion.div
@@ -313,15 +304,7 @@ export default function LandingPage() {
             #1 on leaderboard
           </motion.div>
 
-          <motion.div
-            animate={{ y: [4, -4, 4] }}
-            transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-            className="absolute -bottom-4 -left-8 hidden md:flex items-center gap-2 px-4 py-2 rounded-xl shadow-lg font-black text-sm"
-            style={{ background: "white", border: "2px solid #e5e7eb" }}
-          >
-            <Users className="w-4 h-4 text-indigo-500" />
-            2,400+ members
-          </motion.div>
+
         </motion.div>
       </section>
 

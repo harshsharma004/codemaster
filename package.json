@@ -2,6 +2,7 @@
   "name": "CodeMaster-workspace",
   "private": true,
   "scripts": {
+    "postinstall": "npm install --prefix frontend",
     "dev:frontend": "npm --prefix frontend run dev",
     "build:frontend": "npm --prefix frontend run build",
     "test:frontend": "npm --prefix frontend run test",
