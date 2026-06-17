@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { BarChart3, BookOpen, Building2, Code2, Eye, FlaskConical, LogOut, Moon, Plus, Sun, Swords, UserCircle, Users } from "lucide-react";
+import { BarChart3, BookOpen, Building2, Code2, Eye, FlaskConical, LogOut, Moon, Plus, Sun, Swords, UserCircle, Users, Binary } from "lucide-react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -82,11 +82,13 @@ export const MainLayout = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <header className="sticky top-0 z-50 bg-gradient-to-r from-background via-background to-primary/5 backdrop-blur-sm border-b">
-        <div className="flex items-center justify-between px-4 h-14">
-          <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => navigate("/dashboard")}>
-            <img src="/logo.png" alt="Logo" className="w-6 h-6 object-contain" />
-            <span className="text-base font-semibold tracking-tight bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b shadow-sm">
+        <div className="flex items-center justify-between px-6 h-14">
+          <div className="flex items-center gap-2 cursor-pointer transition-transform hover:scale-105" onClick={() => navigate("/dashboard")}>
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: "#FBBF24" }}>
+              <Binary className="w-4 h-4 text-black" strokeWidth={2.5} />
+            </div>
+            <span className="text-lg font-black tracking-tight text-foreground">
               CodeMaster
             </span>
           </div>

@@ -304,7 +304,7 @@ function Section({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay }}
-      className="rounded-2xl border bg-card p-6 space-y-4"
+      className="rounded-2xl border-2 border-border bg-card p-6 space-y-4 transition-colors hover:border-primary/20"
     >
       <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
         {icon}

@@ -19,6 +19,8 @@ const ProfilePage = lazy(() => import("./pages/ProfilePage"));
 const CompanyProblemsPage = lazy(() => import("./pages/CompanyProblemsPage"));
 const ChallengesPage = lazy(() => import("./pages/ChallengesPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+const PrivacyPolicyPage = lazy(() => import("./pages/PrivacyPolicyPage"));
+const TermsPage = lazy(() => import("./pages/TermsPage"));
 const VisualizePage = lazy(() => import("./pages/VisualizePage"));
 const LinearSearchViz = lazy(() => import("./pages/visualize/LinearSearch"));
 const BinarySearchViz = lazy(() => import("./pages/visualize/BinarySearch"));
@@ -29,6 +31,8 @@ const BFSGridViz = lazy(() => import("./pages/visualize/BFSGrid"));
 const BubbleSortViz = lazy(() => import("./pages/visualize/BubbleSort"));
 const MergeSortViz = lazy(() => import("./pages/visualize/MergeSort"));
 const QuickSortViz = lazy(() => import("./pages/visualize/QuickSort"));
+const InsertionSortViz = lazy(() => import("./pages/visualize/InsertionSort"));
+const SelectionSortViz = lazy(() => import("./pages/visualize/SelectionSort"));
 const QueueViz = lazy(() => import("./pages/visualize/QueueViz"));
 const DFSGridViz = lazy(() => import("./pages/visualize/DFSGrid"));
 const DijkstraViz = lazy(() => import("./pages/visualize/Dijkstra"));
@@ -51,6 +55,8 @@ const App = () => (
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/auth" element={<AuthPage />} />
                 <Route path="/auth/google/callback" element={<GoogleCallback />} />
+                <Route path="/privacy" element={<PrivacyPolicyPage />} />
+                <Route path="/terms" element={<TermsPage />} />
                 <Route
                   element={
                     <ProtectedRoute>
@@ -73,6 +79,8 @@ const App = () => (
                   <Route path="/visualize/bubble-sort" element={<BubbleSortViz />} />
                   <Route path="/visualize/merge-sort" element={<MergeSortViz />} />
                   <Route path="/visualize/quick-sort" element={<QuickSortViz />} />
+                  <Route path="/visualize/insertion-sort" element={<InsertionSortViz />} />
+                  <Route path="/visualize/selection-sort" element={<SelectionSortViz />} />
                   <Route path="/visualize/queue" element={<QueueViz />} />
                   <Route path="/visualize/dfs-grid" element={<DFSGridViz />} />
                   <Route path="/visualize/dijkstra" element={<DijkstraViz />} />

@@ -37,7 +37,7 @@ export const DashboardAnalytics = ({
             <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground/80">Active Times</h2>
             <div className="h-px flex-1 bg-border/40" />
           </div>
-          <div className="p-5 rounded-xl bg-card border shadow-sm">
+          <div className="p-5 rounded-2xl bg-card border-2 border-border shadow-sm transition-colors hover:border-primary/20">
             <WeeklyActivity data={chartData?.weeklyActivity ?? []} />
           </div>
         </div>
@@ -47,7 +47,7 @@ export const DashboardAnalytics = ({
             <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground/80">Difficulty</h2>
             <div className="h-px flex-1 bg-border/40" />
           </div>
-          <div className="p-5 rounded-xl bg-card border shadow-sm">
+          <div className="p-5 rounded-2xl bg-card border-2 border-border shadow-sm transition-colors hover:border-primary/20">
             <PlatformDifficultyBreakdown data={chartData?.platformDifficulty ?? []} />
           </div>
         </div>
@@ -57,7 +57,7 @@ export const DashboardAnalytics = ({
             <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground/80">Platform Loyalty</h2>
             <div className="h-px flex-1 bg-border/40" />
           </div>
-          <div className="p-5 rounded-xl bg-card border shadow-sm">
+          <div className="p-5 rounded-2xl bg-card border-2 border-border shadow-sm transition-colors hover:border-primary/20">
             <PlatformLoyalty data={chartData?.platformLoyalty ?? []} />
           </div>
         </div>

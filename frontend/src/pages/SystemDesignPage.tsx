@@ -192,7 +192,7 @@ export default function SystemDesignPage() {
                     ease: [0.16, 1, 0.3, 1],
                   }}
                   whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                  className="p-5 rounded-2xl bg-card border shadow-sm cursor-pointer group flex flex-col"
+                  className="p-5 rounded-2xl bg-card border-2 border-border cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl group flex flex-col"
                   onClick={() =>
                     navigate(`/system-design/${topic.slug}`)
                   }
@@ -205,7 +205,7 @@ export default function SystemDesignPage() {
                       {topic.difficulty}
                     </span>
                   </div>
-                  <h3 className="font-semibold tracking-tight group-hover:text-primary transition-colors">
+                  <h3 className="font-black tracking-tight group-hover:text-primary transition-colors">
                     {topic.title}
                   </h3>
                   <p className="text-sm text-muted-foreground mt-1.5 flex-1 line-clamp-2">

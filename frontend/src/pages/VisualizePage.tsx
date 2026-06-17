@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Search, GitCompare, Layers, Link2, GitBranch, Grid3X3, ArrowUpDown, Split, Zap, ListOrdered, Route, Waypoints } from "lucide-react";
+import { Search, GitCompare, Layers, Link2, GitBranch, Grid3X3, ArrowUpDown, Split, Zap, ListOrdered, Route, Waypoints, ArrowRightToLine, MousePointerClick } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const algorithms = [
@@ -10,6 +10,8 @@ const algorithms = [
   { slug: "binary-tree", title: "Binary Tree", description: "Traverse a binary tree in pre-order, in-order, post-order & level-order.", icon: GitBranch, color: "text-pink-500" },
   { slug: "bfs-grid", title: "BFS Pathfinder", description: "Find the shortest path on a grid using breadth-first search.", icon: Grid3X3, color: "text-cyan-500" },
   { slug: "bubble-sort", title: "Bubble Sort", description: "Repeatedly swap adjacent elements until the array is sorted.", icon: ArrowUpDown, color: "text-rose-500" },
+  { slug: "insertion-sort", title: "Insertion Sort", description: "Builds a sorted array one element at a time by comparing and shifting.", icon: ArrowRightToLine, color: "text-blue-400" },
+  { slug: "selection-sort", title: "Selection Sort", description: "Finds the minimum element from the unsorted part and puts it at the beginning.", icon: MousePointerClick, color: "text-emerald-400" },
   { slug: "merge-sort", title: "Merge Sort", description: "Divide and conquer — split, sort halves, merge back together.", icon: Split, color: "text-indigo-500" },
   { slug: "quick-sort", title: "Quick Sort", description: "Partition around a pivot and recursively sort sub-arrays.", icon: Zap, color: "text-amber-500" },
   { slug: "queue", title: "Queue", description: "First-in first-out data structure with enqueue, dequeue & peek.", icon: ListOrdered, color: "text-teal-500" },
@@ -38,14 +40,14 @@ export default function VisualizePage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.07, ease: [0.16, 1, 0.3, 1] }}
               whileHover={{ y: -4, transition: { duration: 0.2 } }}
-              className="p-6 rounded-2xl bg-card border shadow-sm cursor-pointer group"
+              className="p-6 rounded-2xl bg-card border-2 border-border cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl group"
               onClick={() => navigate(`/visualize/${algo.slug}`)}
             >
-              <div className={`w-10 h-10 rounded-xl bg-secondary flex items-center justify-center mb-4 ${algo.color} group-hover:scale-110 transition-transform`}>
-                <algo.icon className="w-5 h-5" />
+              <div className={`w-11 h-11 rounded-xl bg-secondary border border-border/50 flex items-center justify-center mb-4 ${algo.color} group-hover:scale-110 transition-transform`}>
+                <algo.icon className="w-5 h-5" strokeWidth={2.5} />
               </div>
-              <h3 className="font-semibold tracking-tight">{algo.title}</h3>
-              <p className="text-sm text-muted-foreground mt-1">{algo.description}</p>
+              <h3 className="font-black tracking-tight text-foreground">{algo.title}</h3>
+              <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{algo.description}</p>
             </motion.div>
           ))}
         </div>

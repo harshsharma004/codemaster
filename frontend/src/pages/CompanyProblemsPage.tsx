@@ -615,11 +615,11 @@ const CompanyProblemsPage = () => {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.15, delay: Math.min(i * 0.012, 0.25) }}
                       onClick={() => selectCompany(name)}
-                      className="flex flex-col items-start p-4 rounded-xl bg-card border shadow-sm hover:shadow-card hover:border-primary/20 transition-all text-left group"
+                      className="flex flex-col items-start p-4 rounded-2xl bg-card border-2 border-border shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-left group"
                     >
                       <div className="flex items-center gap-2 w-full">
                         <Building2 className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0" />
-                        <span className="text-sm font-medium text-foreground truncate">{name}</span>
+                        <span className="text-sm font-black text-foreground truncate">{name}</span>
                         <span className="ml-auto text-xs font-mono tabular-nums text-muted-foreground">
                           {total}
                         </span>

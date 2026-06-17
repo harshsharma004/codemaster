@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, CheckCircle2, Code2, Loader2, Lock, Mail, User, Workflow, Layers3, XCircle } from "lucide-react";
+import { ArrowRight, CheckCircle2, Code2, Loader2, Lock, Mail, User, Workflow, Layers3, XCircle, Binary } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -147,30 +147,43 @@ const AuthPage = () => {
 
   return (
     <div className="min-h-screen bg-background flex">
-      <div className="hidden lg:flex lg:w-1/2 bg-foreground p-12 flex-col justify-between">
-        <div className="flex items-center gap-2">
-          <img src="/logo.png" alt="CodeMaster Logo" className="w-8 h-8 object-contain" />
-          <span className="text-2xl font-semibold tracking-tight text-primary-foreground">CodeMaster</span>
+      <div className="hidden lg:flex lg:w-1/2 p-12 flex-col justify-between relative overflow-hidden" style={{ background: "#111111" }}>
+        {/* Subtle background glow */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: "radial-gradient(ellipse at bottom left, rgba(251,191,36,0.12) 0%, transparent 70%)" }}
+        />
+        
+        <div className="flex items-center gap-2 relative z-10">
+          <div className="w-8 h-8 rounded-lg bg-yellow-400 flex items-center justify-center">
+            <Binary className="w-4.5 h-4.5 text-black" strokeWidth={2.5} />
+          </div>
+          <span className="text-2xl font-black tracking-tight text-white">CodeMaster</span>
         </div>
-        <div>
+        <div className="relative z-10">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, ease: [0.2, 0, 0, 1] }}
-            className="text-5xl font-bold tracking-tight text-primary-foreground leading-tight"
+            className="text-5xl font-black tracking-tight text-white leading-[1.05]"
           >
-            The shared ledger of your
+            Master{" "}
+            <span
+              className="inline-block px-2 rounded-lg text-black mt-1"
+              style={{ background: "#FBBF24" }}
+            >
+              Algorithms.
+            </span>
             <br />
-            squad&apos;s coding grind.
+            Outcode Everyone.
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.1, ease: [0.2, 0, 0, 1] }}
-            className="mt-6 text-lg text-primary-foreground/70 max-w-lg"
+            className="mt-6 text-lg text-gray-400 max-w-lg leading-relaxed"
           >
-            Share problem links from any platform. Track what your squad is solving.
-            Analyze difficulty mix, platform loyalty, and practice velocity in one place.
+            Join thousands of programmers sharpening their edge. Practice real contest problems, analyze your algorithm velocity, and track your squad's competitive grind.
           </motion.p>
         </div>
         <div className="flex items-center gap-8">

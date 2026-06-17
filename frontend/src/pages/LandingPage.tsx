@@ -79,18 +79,18 @@ function TickMark({ className }: { className?: string }) {
 }
 
 function FeatureCard({
-  icon: Icon, title, desc, accent, delay,
+  icon: Icon, title, desc, accent, delay, link
 }: {
-  icon: React.ElementType; title: string; desc: string; accent: string; delay: number;
+  icon: React.ElementType; title: string; desc: string; accent: string; delay: number; link?: string;
 }) {
-  return (
+  const content = (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.4, delay }}
       whileHover={{ y: -4, boxShadow: "0 12px 40px rgba(0,0,0,0.1)" }}
-      className="group rounded-2xl p-6 bg-white border border-gray-200 cursor-default transition-all duration-300"
+      className={`group rounded-2xl p-6 bg-white border border-gray-200 transition-all duration-300 h-full flex flex-col ${link ? "cursor-pointer" : "cursor-default"}`}
     >
       <div
         className="w-11 h-11 rounded-xl flex items-center justify-center mb-4"
@@ -102,6 +102,11 @@ function FeatureCard({
       <p className="text-gray-500 text-sm leading-relaxed">{desc}</p>
     </motion.div>
   );
+
+  if (link) {
+    return <Link to={link} className="block h-full">{content}</Link>;
+  }
+  return content;
 }
 
 export default function LandingPage() {
@@ -122,12 +127,10 @@ export default function LandingPage() {
         </div>
 
         <div className="hidden md:flex items-center gap-8 text-[13px] font-semibold text-gray-400">
-          {["Home", "Features", "Challenges", "Pricing"].map((item) => (
-            <a key={item} href={`#${item.toLowerCase()}`}
-              className="hover:text-white transition-colors duration-200">
-              {item}
-            </a>
-          ))}
+          <a href="#" className="hover:text-white transition-colors duration-200">Home</a>
+          <a href="#features" className="hover:text-white transition-colors duration-200">Features</a>
+          <Link to="/companies" className="hover:text-white transition-colors duration-200">Companies</Link>
+          <Link to="/system-design" className="hover:text-white transition-colors duration-200">System Design</Link>
         </div>
 
         <div className="flex items-center gap-3">
@@ -155,10 +158,10 @@ export default function LandingPage() {
           C++
         </Badge>
         <Badge style={{ top: "30%", right: "5%", background: "#FBBF24", color: "#111" }} delay={0.6} rotation={5}>
-          DEVopS
+          DSA
         </Badge>
         <Badge style={{ top: "55%", right: "8%", background: "white", color: "#111", border: "2px solid #e5e7eb" }} delay={1.2} rotation={-3}>
-          html//
+          System Design
         </Badge>
         <Badge style={{ top: "58%", left: "5%", background: "white", color: "#111", border: "2px solid #e5e7eb" }} delay={0.9} rotation={4}>
           {"{ }"}
@@ -341,12 +344,12 @@ export default function LandingPage() {
         </motion.h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <FeatureCard icon={Zap} title="Live Visualizer" accent="#FBBF24" delay={0} desc="Step through sorting, graph traversal, and tree operations frame by frame. Build real intuition, not just pattern recognition." />
-          <FeatureCard icon={Trophy} title="Group Challenges" accent="#6366F1" delay={0.08} desc="Create private arenas, invite friends, and race to solve problem sets. Leaderboards update in real time." />
-          <FeatureCard icon={Users} title="Company Tracks" accent="#10B981" delay={0.16} desc="Curated lists from FAANG and top startups, tagged by topic and difficulty so your prep maps to the interview." />
-          <FeatureCard icon={Network} title="Graph Playground" accent="#F87171" delay={0.24} desc="Run BFS, DFS, and Dijkstra on custom graphs you build. Watch the frontier expand live." />
-          <FeatureCard icon={Database} title="System Design" accent="#38BDF8" delay={0.32} desc="Go beyond algorithms with guided system design — caching, load balancing, distributed consensus." />
-          <FeatureCard icon={Terminal} title="Test Generator" accent="#A78BFA" delay={0.40} desc="Auto-generate edge-case inputs for any problem. Stop failing on corner cases you didn't think to test." />
+          <FeatureCard icon={Zap} title="Live Visualizer" accent="#FBBF24" delay={0} link="/visualize" desc="Step through sorting, graph traversal, and tree operations frame by frame. Build real intuition, not just pattern recognition." />
+          <FeatureCard icon={Trophy} title="Group Challenges" accent="#6366F1" delay={0.08} link="/challenges" desc="Create private arenas, invite friends, and race to solve problem sets. Leaderboards update in real time." />
+          <FeatureCard icon={Users} title="Company Tracks" accent="#10B981" delay={0.16} link="/companies" desc="Curated lists from FAANG and top startups, tagged by topic and difficulty so your prep maps to the interview." />
+          <FeatureCard icon={Network} title="Graph Playground" accent="#F87171" delay={0.24} link="/visualize/bfs-grid" desc="Run BFS, DFS, and Dijkstra on custom graphs you build. Watch the frontier expand live." />
+          <FeatureCard icon={Database} title="System Design" accent="#38BDF8" delay={0.32} link="/system-design" desc="Go beyond algorithms with guided system design — caching, load balancing, distributed consensus." />
+          <FeatureCard icon={Terminal} title="Test Generator" accent="#A78BFA" delay={0.40} link="/test-generator" desc="Auto-generate edge-case inputs for any problem. Stop failing on corner cases you didn't think to test." />
         </div>
       </section>
 
@@ -398,9 +401,9 @@ export default function LandingPage() {
           </div>
           <span className="text-gray-400 text-xs font-mono">© {new Date().getFullYear()} CodeMaster. Built for programmers.</span>
           <div className="flex items-center gap-5 text-xs text-gray-400">
-            {["Privacy", "Terms", "GitHub"].map((item) => (
-              <a key={item} href="#" className="hover:text-black transition-colors">{item}</a>
-            ))}
+            <Link to="/privacy" className="hover:text-black transition-colors">Privacy</Link>
+            <Link to="/terms" className="hover:text-black transition-colors">Terms</Link>
+            <a href="https://github.com/harshsharma004" target="_blank" rel="noreferrer" className="hover:text-black transition-colors">GitHub</a>
           </div>
         </div>
       </footer>

@@ -27,12 +27,12 @@ export const GroupCard = ({ group, onClick, onDelete, isActive = false, index = 
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.2, delay: index * 0.05, ease: [0.2, 0, 0, 1] }}
       onClick={onClick}
-      className={`relative group w-full text-left px-3 py-3 rounded-xl transition-all duration-200 ${
-        isActive ? "bg-gradient-to-r from-primary/10 to-primary/5 shadow-surface" : "hover:bg-secondary/60"
+      className={`relative group w-full text-left p-4 rounded-2xl border-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-md ${
+        isActive ? "bg-primary/10 border-primary" : "bg-card border-border hover:border-primary/50"
       }`}
     >
       <div className="flex items-center justify-between">
-        <span className={`text-base font-medium truncate pr-6 ${isActive ? "text-primary" : "text-foreground"}`}>
+        <span className={`text-base font-black truncate pr-6 ${isActive ? "text-primary" : "text-foreground"}`}>
           {group.name}
         </span>
         <div className="relative flex items-center shrink-0 min-h-[28px]">
