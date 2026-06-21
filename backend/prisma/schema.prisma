@@ -1,0 +1,188 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("CodeMaster_DATABASE_URL")
+}
+
+model User {
+  id               BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  email            String    @unique @db.VarChar(255)
+  username         String    @unique @db.VarChar(32)
+  displayName      String    @map("display_name") @db.VarChar(120)
+  bio              String    @default("") @db.VarChar(255)
+  favoriteTopic    String?   @map("favorite_topic") @db.VarChar(120)
+  favoritePlatform String?   @map("favorite_platform") @db.VarChar(120)
+  avatarUrl        String?   @map("avatar_url") @db.VarChar(500)
+  passwordHash     String?   @map("password_hash") @db.VarChar(255)
+  googleId         String?   @unique @map("google_id") @db.VarChar(255)
+  authProvider     String    @default("local") @map("auth_provider") @db.VarChar(32)
+  createdAt        DateTime  @map("created_at")
+
+  ownedGroups      Group[]           @relation("OwnedGroups")
+  memberships      GroupMembership[]
+  sharedProblems   ProblemShare[]    @relation("SharedProblems")
+  friendships      Friendship[]      @relation("UserFriendships")
+  friendOf         Friendship[]      @relation("FriendOf")
+  joinRequests     JoinRequest[]
+  createdChallenges Challenge[]      @relation("CreatedChallenges")
+  challengeParticipants ChallengeParticipant[]
+
+  @@map("users")
+}
+
+model Friendship {
+  id        BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  userId    BigInt   @map("user_id") @db.UnsignedBigInt
+  friendId  BigInt   @map("friend_id") @db.UnsignedBigInt
+  status    String   @default("pending") @db.VarChar(20)
+  createdAt DateTime @map("created_at")
+
+  user   User @relation("UserFriendships", fields: [userId], references: [id])
+  friend User @relation("FriendOf", fields: [friendId], references: [id])
+
+  @@unique([userId, friendId], name: "uq_friendship_pair")
+  @@index([userId])
+  @@index([friendId])
+  @@map("friendships")
+}
+
+model Group {
+  id        BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  name      String   @db.VarChar(120)
+  ownerId   BigInt   @map("owner_id") @db.UnsignedBigInt
+  createdAt DateTime @map("created_at")
+
+  owner       User              @relation("OwnedGroups", fields: [ownerId], references: [id])
+  memberships GroupMembership[]
+  problems    ProblemShare[]
+  joinRequests JoinRequest[]
+
+  @@index([name])
+  @@index([ownerId])
+  @@map("groups")
+}
+
+model GroupMembership {
+  id        BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  groupId   BigInt   @map("group_id") @db.UnsignedBigInt
+  userId    BigInt   @map("user_id") @db.UnsignedBigInt
+  role      String   @default("member") @db.VarChar(20)
+  createdAt DateTime @map("created_at")
+
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, userId], name: "uq_group_membership")
+  @@index([groupId])
+  @@index([userId])
+  @@map("group_memberships")
+}
+
+model ProblemShare {
+  id                BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  groupId           BigInt   @map("group_id") @db.UnsignedBigInt
+  sharedById        BigInt   @map("shared_by_id") @db.UnsignedBigInt
+  platform          String   @db.VarChar(32)
+  problemUrl        String   @map("problem_url") @db.Text
+  platformProblemId String?  @map("platform_problem_id") @db.VarChar(120)
+  title             String   @db.VarChar(255)
+  contest           String?  @db.VarChar(255)
+  tags              String?  @db.VarChar(255)
+  difficulty        String   @default("Unknown") @db.VarChar(64)
+  thumbnailUrl      String?  @map("thumbnail_url") @db.VarChar(500)
+  solvedByCount     Int?     @map("solved_by_count")
+  problemSignature  String   @map("problem_signature") @db.VarChar(255)
+  sharedAt          DateTime @map("shared_at")
+
+  group    Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  sharedBy User  @relation("SharedProblems", fields: [sharedById], references: [id], onDelete: Cascade)
+
+  @@index([groupId, sharedAt], name: "ix_problem_shares_group_shared_at")
+  @@index([groupId, problemSignature], name: "ix_problem_shares_group_signature")
+  @@index([sharedById, sharedAt], name: "ix_problem_shares_shared_by_shared_at")
+  @@index([platform])
+  @@index([platformProblemId])
+  @@index([title])
+  @@map("problem_shares")
+}
+
+model JoinRequest {
+  id        BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  groupId   BigInt   @map("group_id") @db.UnsignedBigInt
+  userId    BigInt   @map("user_id") @db.UnsignedBigInt
+  status    String   @default("pending") @db.VarChar(20)
+  createdAt DateTime @map("created_at")
+
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, userId], name: "uq_join_request")
+  @@index([groupId])
+  @@index([userId])
+  @@map("join_requests")
+}
+
+model Challenge {
+  id          BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  createdById BigInt    @map("created_by_id") @db.UnsignedBigInt
+  title       String    @db.VarChar(120)
+  platform    String    @default("codeforces") @db.VarChar(32)
+  numProblems Int       @default(3) @map("num_problems") @db.SmallInt
+  minRating   Int?      @map("min_rating")
+  maxRating   Int?      @map("max_rating")
+  tags        String?   @db.VarChar(500)
+  status      String    @default("pending") @db.VarChar(20)
+  createdAt   DateTime  @map("created_at")
+  startedAt   DateTime? @map("started_at")
+
+  createdBy    User                   @relation("CreatedChallenges", fields: [createdById], references: [id])
+  participants ChallengeParticipant[]
+  problems     ChallengeProblem[]
+
+  @@index([createdById, status], name: "ix_challenges_created_by_status")
+  @@map("challenges")
+}
+
+model ChallengeParticipant {
+  id          BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  challengeId BigInt    @map("challenge_id") @db.UnsignedBigInt
+  userId      BigInt    @map("user_id") @db.UnsignedBigInt
+  status      String    @default("invited") @db.VarChar(20)
+  joinedAt    DateTime? @map("joined_at")
+
+  challenge Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([challengeId, userId], name: "uq_challenge_participant")
+  @@index([challengeId])
+  @@index([userId])
+  @@map("challenge_participants")
+}
+
+model ChallengeProblem {
+  id           BigInt  @id @default(autoincrement()) @db.UnsignedBigInt
+  challengeId  BigInt  @map("challenge_id") @db.UnsignedBigInt
+  problemUrl   String  @map("problem_url") @db.Text
+  title        String  @db.VarChar(255)
+  contestId    Int?    @map("contest_id")
+  problemIndex String? @map("problem_index") @db.VarChar(10)
+  rating       Int?
+  tags         String? @db.VarChar(500)
+  orderIndex   Int     @default(0) @map("order_index") @db.SmallInt
+
+  challenge Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+
+  @@index([challengeId])
+  @@map("challenge_problems")
+}
+
+model SchemaMigration {
+  id        String   @id @db.VarChar(64)
+  source    String   @db.VarChar(32)
+  appliedAt DateTime @map("applied_at")
+
+  @@map("schema_migrations")
+}
