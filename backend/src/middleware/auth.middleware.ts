@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import rateLimit, { ipKeyGenerator } from 'express-rate-limit';
+import rateLimit from 'express-rate-limit';
 import { env } from '../config/env';
 import { verifyAccessToken } from '../utils/security';
 import { prisma } from '../db';
@@ -19,7 +19,7 @@ export const friendLookupLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   keyGenerator: (req: Request, res: Response) => {
-    return `${(req as any).user?.id || 'anon'}:${ipKeyGenerator(req, res)}`;
+    return `${(req as any).user?.id || 'anon'}:${req.ip || 'unknown'}`;
   }
 });
 
