@@ -97,13 +97,50 @@ export const buildAnalytics = (problems: ProblemRecord[]) => {
       difficulty: items[0].difficulty,
     }));
 
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  
+  const weeklyActivityTemp = [];
+  const today = new Date();
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(today.getTime() - i * 24 * 60 * 60 * 1000);
+    weeklyActivityTemp.push({ day: dayNames[d.getDay()], problems: 0, _date: d.toDateString() });
+  }
+
+  const monthlyTrendTemp = [];
+  const currentMonth = today.getMonth();
+  const currentYear = today.getFullYear();
+  for (let i = 5; i >= 0; i--) {
+    let m = currentMonth - i;
+    let y = currentYear;
+    if (m < 0) {
+      m += 12;
+      y -= 1;
+    }
+    monthlyTrendTemp.push({ month: monthNames[m], problems: 0, _m: m, _y: y });
+  }
+
+  problems.forEach(p => {
+    const pDateStr = p.sharedAt.toDateString();
+    const wDay = weeklyActivityTemp.find(w => w._date === pDateStr);
+    if (wDay) wDay.problems++;
+
+    const pMonth = p.sharedAt.getMonth();
+    const pYear = p.sharedAt.getFullYear();
+    const mMonth = monthlyTrendTemp.find(m => m._m === pMonth && m._y === pYear);
+    if (mMonth) mMonth.problems++;
+  });
+
+  const weeklyActivity = weeklyActivityTemp.map(({ day, problems }) => ({ day, problems }));
+  const monthlyTrend = monthlyTrendTemp.map(({ month, problems }) => ({ month, problems }));
+
   return {
     stats,
     difficultyDistribution,
     platformDifficulty: [], // Simplified for now
     platformLoyalty,
-    weeklyActivity: [],     // Simplified for now
-    monthlyTrend: [],       // Simplified for now
+    weeklyActivity,
+    monthlyTrend,
     memberLeaderboard,
     topProblems,
   };
