@@ -189,12 +189,12 @@ export const api = {
   createGroup: (input: { name: string; memberIds: number[] }) =>
     apiRequest<GroupSummary>("/api/groups", {
       method: "POST",
-      body: JSON.stringify({ name: input.name, member_ids: input.memberIds }),
+      body: JSON.stringify({ name: input.name, memberIds: input.memberIds }),
     }),
   addGroupMembers: (groupId: number, memberIds: number[]) =>
     apiRequest<GroupSummary>(`/api/groups/${groupId}/members`, {
       method: "POST",
-      body: JSON.stringify({ member_ids: memberIds }),
+      body: JSON.stringify({ memberIds }),
     }),
   removeGroupMember: (groupId: number, userId: number) =>
     apiRequest<void>(`/api/groups/${groupId}/members/${userId}`, {
