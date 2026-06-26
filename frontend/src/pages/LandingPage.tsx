@@ -382,7 +382,7 @@ export default function LandingPage() {
             </div>
             <span className="font-black text-black text-sm tracking-tight">CodeMaster</span>
           </div>
-          <span className="text-gray-400 text-xs font-mono">© {new Date().getFullYear()} CodeMaster. Built for programmers.</span>
+          <span className="text-gray-400 text-xs font-mono">© 2026 CodeMaster. Developed by Harsh Sharma</span>
           <div className="flex items-center gap-5 text-xs text-gray-400">
             <Link to="/privacy" className="hover:text-black transition-colors">Privacy</Link>
             <Link to="/terms" className="hover:text-black transition-colors">Terms</Link>
