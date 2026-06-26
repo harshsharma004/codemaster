@@ -145,6 +145,32 @@ const AuthPage = () => {
     }
   };
 
+  const handleDemoLogin = async () => {
+    setIsSubmitting(true);
+    try {
+      try {
+        const response = await api.login({ identifier: "demo", password: "demopassword123" });
+        setSession(response.accessToken, response.user);
+        toast.success("Welcome to the demo account!");
+        navigate("/dashboard");
+      } catch (loginError) {
+        const regResponse = await api.register({
+          email: "demo@codemaster.app",
+          password: "demopassword123",
+          username: "demo",
+          displayName: "Demo User",
+        });
+        setSession(regResponse.accessToken, regResponse.user);
+        toast.success("Demo account created & logged in!");
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to login as demo user");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background flex">
       <div className="hidden lg:flex lg:w-1/2 p-12 flex-col justify-between relative overflow-hidden" style={{ background: "#111111" }}>
@@ -357,6 +383,17 @@ const AuthPage = () => {
               {isSubmitting ? "Please wait" : isLogin ? "Sign in" : "Create account"}
               <ArrowRight className="w-5 h-5" />
             </Button>
+            {isLogin && (
+              <Button 
+                type="button" 
+                variant="outline"
+                className="w-full h-12 text-base font-semibold mt-2" 
+                disabled={isSubmitting}
+                onClick={handleDemoLogin}
+              >
+                Login as Demo User
+              </Button>
+            )}
           </form>
 
           <div className="mt-8 text-center">
